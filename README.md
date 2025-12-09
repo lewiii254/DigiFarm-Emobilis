@@ -1,6 +1,7 @@
 # 🌾 DigiFarm Assist
 
 > **Empowering African Farmers with AI-Powered Agricultural Intelligence**
+> 
 > **EMOBILIS WEB DEVELOPMENT SCHOLARSHIP FINAL PROJECT😁🚀🚀**
 
 A production-ready full-stack web application revolutionizing agricultural assistance through intelligent crop diagnosis, seamless marketplace integration, and comprehensive farming knowledge hub. Built with Django REST Framework backend and React frontend.
@@ -758,4 +759,5 @@ Built with ❤️ by the DigiFarm team
 ---
 
 **Last Updated**: December 2025 | **Status**: ✅ Production Ready
+
 
