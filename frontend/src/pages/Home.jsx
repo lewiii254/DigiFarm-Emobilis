@@ -1,252 +1,232 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { motion } from 'framer-motion'
+import WeatherWidget from '../components/WeatherWidget'
 
 const Home = () => {
   const { isAuthenticated } = useAuth()
 
+  // Animation variants
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6 }
+  }
+
+  const stagger = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }
+
   return (
-    <div>
+    <div className="font-sans antialiased overflow-x-hidden">
+      
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary-700 via-primary-600 to-emerald-500 text-white py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.15),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.12),transparent_25%)]" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid md:grid-cols-2 gap-10 items-center">
-            <div>
-              <p className="uppercase tracking-wide text-primary-100 mb-3 font-semibold">DigiFarm Assist</p>
-              <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
-                Grow smarter with AI, trusted vendors, and expert knowledge
-              </h1>
-              <p className="text-lg md:text-xl mb-8 text-primary-50 leading-relaxed">
-                Diagnose crop issues instantly, source verified agri-inputs, and learn best practices tailored for East African farmers.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/diagnosis" className="btn-primary bg-white text-primary-700 hover:bg-primary-50 text-lg px-8 py-3 shadow-lg">
-                  Start a Diagnosis
+      <section className="relative bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white min-h-[90vh] flex items-center overflow-hidden">
+        {/* Abstract Background Shapes */}
+        <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-emerald-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-teal-500/10 rounded-full blur-3xl" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div 
+              initial="initial"
+              animate="animate"
+              variants={stagger}
+            >
+              <motion.div variants={fadeIn} className="inline-block bg-white/10 backdrop-blur-sm border border-emerald-500/30 rounded-full px-4 py-1.5 text-sm font-medium text-emerald-300 mb-6">
+                🚀 Revolutionizing Agriculture
+              </motion.div>
+              <motion.h1 variants={fadeIn} className="text-5xl md:text-7xl font-extrabold leading-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-emerald-200">
+                Farming, <br />Reimagined.
+              </motion.h1>
+              <motion.p variants={fadeIn} className="text-lg md:text-xl text-emerald-100 mb-8 max-w-lg leading-relaxed">
+                Connect with AI diagnostics, certified inputs, and a thriving community. The all-in-one platform for modern farmers.
+              </motion.p>
+              
+              <motion.div variants={fadeIn} className="flex flex-col sm:flex-row gap-4 mb-12">
+                <Link to="/diagnosis" className="group relative px-8 py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] overflow-hidden">
+                  <span className="relative z-10">Start Diagnosis</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </Link>
-                <Link to="/marketplace" className="btn-secondary bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary-700 text-lg px-8 py-3">
-                  Explore Marketplace
+                <Link to="/marketplace" className="px-8 py-3 bg-white/5 hover:bg-white/10 border border-white/20 hover:border-white/40 text-white font-semibold rounded-xl backdrop-blur-md transition-all">
+                  Browse Market
                 </Link>
+              </motion.div>
+
+              {/* Stats */}
+              <motion.div variants={fadeIn} className="grid grid-cols-3 gap-6 border-t border-white/10 pt-8">
+                <div>
+                  <p className="text-3xl font-bold text-white">15K+</p>
+                  <p className="text-sm text-emerald-400/80">Active Farmers</p>
+                </div>
+                <div>
+                  <p className="text-3xl font-bold text-white">98%</p>
+                  <p className="text-sm text-emerald-400/80">Accuracy Rate</p>
+                </div>
+                <div>
+                  <p className="text-3xl font-bold text-white">24/7</p>
+                  <p className="text-sm text-emerald-400/80">AI Support</p>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Visual/Widget Side */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="relative hidden lg:block"
+            >
+              <div className="relative z-10 transform hover:scale-[1.02] transition-transform duration-500">
+                <div className="absolute -top-10 -right-10 w-24 h-24 bg-yellow-400/20 rounded-full blur-xl animate-pulse" />
+                <WeatherWidget />
+                
+                {/* Floating Elements */}
+                <motion.div 
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                  className="absolute -bottom-10 -left-10 bg-white p-4 rounded-xl shadow-xl flex items-center gap-3 w-64"
+                >
+                  <div className="bg-emerald-100 p-2 rounded-lg text-emerald-600 text-xl">🌿</div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-800">New Diagnosis</p>
+                    <p className="text-xs text-gray-500">Tomato Early Blight detected</p>
+                  </div>
+                </motion.div>
               </div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/20">
-              <h3 className="text-xl font-semibold mb-4">Why farmers love us</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-white/10 border border-white/20">
-                  <p className="text-3xl font-bold">15K+</p>
-                  <p className="text-sm text-primary-50">Diagnoses processed</p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-sm font-bold text-emerald-600 uppercase tracking-widest mb-3">Core Features</h2>
+            <h3 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">Everything you need to grow</h3>
+            <p className="text-gray-600 text-lg">Powerful tools integrating cutting-edge technology with traditional farming wisdom.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: "🔍",
+                title: "AI Crop Doctor",
+                desc: "Snap a photo of your sick crop. Our AI identifies diseases instantly and prescribes the perfect treatment plan.",
+                link: "/diagnosis",
+                color: "bg-blue-50 text-blue-600"
+              },
+              {
+                icon: "🛒",
+                title: "Smart Marketplace",
+                desc: "Order certified seeds and inputs. We connect you directly with verified vendors for quality assurance.",
+                link: "/marketplace",
+                color: "bg-emerald-50 text-emerald-600"
+              },
+              {
+                icon: "🤝",
+                title: "Farmer Community",
+                desc: "Join thousands of farmers. Share tips, ask questions, and learn from experts in our localized forums.",
+                link: "/community",
+                color: "bg-purple-50 text-purple-600"
+              }
+            ].map((feature, i) => (
+              <motion.div 
+                key={feature.title}
+                whileHover={{ y: -5 }}
+                className="bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-gray-100"
+              >
+                <div className={`w-14 h-14 ${feature.color} rounded-2xl flex items-center justify-center text-2xl mb-6`}>
+                  {feature.icon}
                 </div>
-                <div className="p-4 rounded-xl bg-white/10 border border-white/20">
-                  <p className="text-3xl font-bold">4.8★</p>
-                  <p className="text-sm text-primary-50">Farmer satisfaction</p>
+                <h4 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h4>
+                <p className="text-gray-600 mb-6 leading-relaxed">{feature.desc}</p>
+                <Link to={feature.link} className="inline-flex items-center text-sm font-semibold text-gray-900 hover:text-emerald-600 transition-colors">
+                  Try it out <span className="ml-2">→</span>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Community Teaser */}
+      <section className="py-24 bg-white overflow-hidden relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-emerald-900 rounded-[2.5rem] p-12 md:p-24 relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
+            
+            <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+              <div>
+                <h3 className="text-white text-3xl md:text-5xl font-bold mb-6">Join the conversation</h3>
+                <p className="text-emerald-200 text-lg mb-8">
+                  Get real-time advice from seasoned farmers and agronomists. Don't farm alone.
+                </p>
+                <div className="flex flex-col gap-4">
+                  {[
+                    "💬 Active discussions on market prices",
+                    "🌦️ Localized weather updates",
+                    "🚜 Equipment sharing networks"
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-3 text-white/90">
+                      <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">✓</div>
+                      {item}
+                    </div>
+                  ))}
                 </div>
-                <div className="p-4 rounded-xl bg-white/10 border border-white/20">
-                  <p className="text-3xl font-bold">200+</p>
-                  <p className="text-sm text-primary-50">Verified products</p>
-                </div>
-                <div className="p-4 rounded-xl bg-white/10 border border-white/20">
-                  <p className="text-3xl font-bold">24/7</p>
-                  <p className="text-sm text-primary-50">Support & alerts</p>
-                </div>
-              </div>
-              {!isAuthenticated && (
-                <div className="mt-6">
-                  <Link to="/register" className="btn-primary w-full text-center">
-                    Create free account
+                <div className="mt-10">
+                  <Link to="/community" className="bg-white text-emerald-900 px-8 py-3 rounded-xl font-bold hover:bg-emerald-50 transition-colors inline-block">
+                    Visit Community Hub
                   </Link>
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Highlights */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                icon: '🔍',
-                title: 'AI Crop Doctor',
-                desc: 'Upload leaf images and get instant diagnosis, confidence scores, and tailored remedies.'
-              },
-              {
-                icon: '🛒',
-                title: 'Verified Marketplace',
-                desc: 'Curated seeds, fertilizers, and tools from vetted vendors with transparent pricing.'
-              },
-              {
-                icon: '📡',
-                title: 'Realtime Alerts',
-                desc: 'Weather nudges, pest outbreak alerts, and payment notifications to keep you proactive.'
-              }
-            ].map((item) => (
-              <div key={item.title} className="card h-full">
-                <div className="text-4xl mb-3">{item.icon}</div>
-                <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                <p className="text-gray-600">{item.desc}</p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Impact Metrics */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { label: 'Avg diagnosis-to-action', value: '6 hrs', desc: 'From upload to recommended treatment.' },
-            { label: 'Crop recovery rate', value: '92%', desc: 'Crops showing improvement after guided steps.' },
-            { label: 'On-time deliveries', value: '97%', desc: 'Orders fulfilled by verified vendors.' }
-          ].map((item) => (
-            <div key={item.label} className="card text-left">
-              <p className="text-sm uppercase text-primary-600 font-semibold mb-2">{item.label}</p>
-              <p className="text-3xl font-bold mb-2">{item.value}</p>
-              <p className="text-gray-600">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Categories */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8 flex-col sm:flex-row gap-4">
-            <div>
-              <p className="text-primary-600 font-semibold uppercase tracking-wide">Marketplace spotlights</p>
-              <h2 className="text-3xl font-bold">Trusted inputs to act fast</h2>
-              <p className="text-gray-600 mt-2">Browse curated product types farmers use most after diagnosis.</p>
-            </div>
-            <Link to="/marketplace" className="btn-primary">Shop now</Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {[
-              { title: 'Seeds & Seedlings', desc: 'High-germination varieties, drought-tolerant hybrids.' },
-              { title: 'Fertilizers', desc: 'Soil-friendly blends for leafy greens, maize, and horticulture.' },
-              { title: 'Pesticides & IPM', desc: 'Safe pest control with clear application guides.' },
-              { title: 'Tools & Irrigation', desc: 'Drip kits, sprayers, and essentials for smallholders.' }
-            ].map((item) => (
-              <div key={item.title} className="card">
-                <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                <p className="text-gray-600">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-10 flex-col md:flex-row gap-4">
-            <div>
-              <p className="text-primary-600 font-semibold uppercase tracking-wide">3-minute setup</p>
-              <h2 className="text-3xl font-bold">Your path to healthier crops</h2>
-            </div>
-            <Link to="/diagnosis" className="btn-primary">
-              Start a diagnosis
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {[
-              { step: '1', title: 'Sign up', text: 'Create your free farmer or vendor profile.' },
-              { step: '2', title: 'Upload photo', text: 'Snap your crop issue and submit.' },
-              { step: '3', title: 'Get insights', text: 'AI suggests likely issues with confidence.' },
-              { step: '4', title: 'Act & source', text: 'Follow remedies and buy trusted inputs.' }
-            ].map((item) => (
-              <div key={item.step} className="card text-center">
-                <div className="bg-primary-100 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4 text-primary-700 font-bold text-lg">
-                  {item.step}
+              
+              <div className="relative">
+                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-10 h-10 bg-yellow-400 rounded-full"></div>
+                    <div>
+                      <div className="h-2 w-24 bg-white/40 rounded mb-2"></div>
+                      <div className="h-2 w-16 bg-white/20 rounded"></div>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="h-2 w-full bg-white/20 rounded"></div>
+                    <div className="h-2 w-full bg-white/20 rounded"></div>
+                    <div className="h-2 w-3/4 bg-white/20 rounded"></div>
+                  </div>
                 </div>
-                <h3 className="font-semibold mb-2">{item.title}</h3>
-                <p className="text-gray-600">{item.text}</p>
+                <div className="absolute -bottom-6 -right-6 bg-white rounded-2xl p-4 shadow-xl text-emerald-900 w-64">
+                   <p className="text-sm font-bold">"This app saved my harvest!"</p>
+                   <p className="text-xs text-gray-500 mt-1">- John K., Kitale</p>
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-10">Trusted by farmers & vendors</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                name: 'Jane · Tomato farmer, Nakuru',
-                quote: 'Diagnosed blight in minutes and bought treatment immediately. Saved a full harvest.',
-              },
-              {
-                name: 'Ahmed · Vendor, Mombasa',
-                quote: 'Verified buyers, M-Pesa checkout, and clear order tracking keep my customers happy.',
-              },
-              {
-                name: 'Grace · Agronomist',
-                quote: 'The knowledge hub and localized advice help me guide farmers faster and with confidence.',
-              },
-            ].map((t) => (
-              <div key={t.name} className="card h-full">
-                <p className="text-gray-700 italic mb-4">“{t.quote}”</p>
-                <p className="font-semibold text-primary-700">{t.name}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Value + CTA */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-10 items-center">
-          <div>
-            <p className="text-primary-600 font-semibold uppercase tracking-wide mb-2">Built for East African farms</p>
-            <h3 className="text-3xl font-bold mb-4">Insights, inputs, and guidance in one place</h3>
-            <ul className="space-y-3 text-gray-700">
-              <li>• Region-aware recommendations and language-ready (English/Swahili friendly copy)</li>
-              <li>• Pay securely via M-Pesa with instant status updates</li>
-              <li>• Verified vendors and quality inputs to protect your yields</li>
-              <li>• Knowledge hub with practical, field-tested guides</li>
-              <li>• Notifications for weather, pests, and order updates</li>
-            </ul>
-          </div>
-          <div className="card bg-gradient-to-br from-primary-50 to-white border-primary-100">
-            <h4 className="text-xl font-semibold mb-3">Take the next step</h4>
-            <div className="space-y-3 text-gray-700">
-              <p>👨‍🌾 Farmers: run a free diagnosis or browse curated inputs.</p>
-              <p>🏪 Vendors: list products, manage orders, and reach ready buyers.</p>
-              <p>🌱 Agronomists: share knowledge through the hub.</p>
-            </div>
-            <div className="mt-6 flex flex-col sm:flex-row gap-3">
-              <Link to="/marketplace" className="btn-primary w-full text-center">
-                Browse inputs
-              </Link>
-              <Link to="/knowledge" className="btn-secondary w-full text-center">
-                Read guides
-              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Banner */}
-      <section className="py-14 bg-gradient-to-r from-primary-700 to-emerald-600 text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <h3 className="text-2xl md:text-3xl font-bold mb-2">Ready to reduce losses and boost yields?</h3>
-            <p className="text-primary-50">Run a diagnosis, buy trusted inputs, and follow clear playbooks—all in one place.</p>
-          </div>
-          <div className="flex gap-3 flex-wrap">
-            <Link to={isAuthenticated ? "/dashboard" : "/register"} className="btn-primary bg-white text-primary-700 hover:bg-primary-50">
-              {isAuthenticated ? 'Open Dashboard' : 'Create free account'}
-            </Link>
-            <Link to="/knowledge" className="btn-secondary bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary-700">
-              Explore Knowledge Hub
+      {/* CTA Footer */}
+      <section className="py-20 bg-gray-50 text-center">
+        <div className="max-w-4xl mx-auto px-4">
+          <h2 className="text-3xl font-bold mb-6 text-gray-900">Ready to transform your farm?</h2>
+          <p className="text-gray-600 mb-8 text-lg">Join thousands of farmers making smarter decisions every day.</p>
+          <div className="flex justify-center gap-4">
+            <Link to={isAuthenticated ? "/dashboard" : "/register"} className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-700 shadow-lg hover:shadow-emerald-500/30 transition-all">
+              {isAuthenticated ? 'Go to Dashboard' : 'Get Started for Free'}
             </Link>
           </div>
         </div>
       </section>
+
     </div>
   )
 }
 
 export default Home
-

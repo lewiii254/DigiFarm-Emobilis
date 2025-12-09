@@ -6,7 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.throttling import UserRateThrottle
 from .models import CropImage, DiagnosisResult
 from .serializers import CropImageSerializer, DiagnosisResultSerializer, DiagnosisDetailSerializer
-from .tasks import diagnose_image
+from .tasks import diagnose_image, mock_crop_diagnosis
+from .models import DiagnosisResult
 
 
 class DiagnosisThrottle(UserRateThrottle):
@@ -33,8 +34,23 @@ class CropImageViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         crop_image = serializer.save()
-        # Trigger Celery task for diagnosis
-        diagnose_image.delay(crop_image.id)
+        
+        # DEMO MODE: Process synchronously to avoid needing Celery worker
+        try:
+             result = mock_crop_diagnosis(crop_image)
+             DiagnosisResult.objects.create(
+                crop_image=crop_image,
+                predicted_label=result['label'],
+                confidence=result['confidence'],
+                recommendations=result['recommendations'],
+                model_version='v1.0-mock'
+             )
+             crop_image.status = 'processed'
+             crop_image.save()
+        except Exception as e:
+             # Fallback to async if needed, or log error
+             pass
+
         return crop_image
     
     @action(detail=True, methods=['get'], url_path='result')

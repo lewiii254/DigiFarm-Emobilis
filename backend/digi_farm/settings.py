@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'apps.knowledge',
     'apps.payments',
     'apps.notifications',
+    'apps.community',
 ]
 
 MIDDLEWARE = [
@@ -86,12 +87,8 @@ WSGI_APPLICATION = 'digi_farm.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME', default='digifarm'),
-        'USER': env('DB_USER', default='postgres'),
-        'PASSWORD': env('DB_PASSWORD', default='postgres'),
-        'HOST': env('DB_HOST', default='db'),
-        'PORT': env('DB_PORT', default='5432'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 

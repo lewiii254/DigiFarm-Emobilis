@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
+
 from apps.users.models import User
 
 
@@ -13,9 +13,7 @@ class Farm(models.Model):
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     size_hectares = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     soil_type = models.CharField(max_length=100, blank=True)
-    main_crops = ArrayField(
-        models.CharField(max_length=100),
-        size=10,
+    main_crops = models.JSONField(
         default=list,
         blank=True,
         help_text='List of main crops grown on this farm'

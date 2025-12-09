@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from .models import Product, ProductCategory, Order, Rating, Vendor
+from .models import Product, ProductCategory, Order, Rating, Vendor, ProductImage
 from .serializers import (
     ProductSerializer, ProductCategorySerializer, OrderSerializer,
     RatingSerializer, VendorSerializer
@@ -44,7 +44,16 @@ class ProductViewSet(viewsets.ModelViewSet):
         
         # Get or create vendor profile
         vendor, _ = Vendor.objects.get_or_create(user=self.request.user)
-        serializer.save(vendor=vendor)
+        product = serializer.save(vendor=vendor)
+        
+        # Handle images
+        images = self.request.FILES.getlist('images')
+        for i, image in enumerate(images):
+            ProductImage.objects.create(
+                product=product, 
+                image=image,
+                is_primary=(i==0)
+            )
 
 
 class ProductCategoryViewSet(viewsets.ReadOnlyModelViewSet):

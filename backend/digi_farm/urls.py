@@ -13,7 +13,7 @@ urlpatterns = [
     path('health/', health_check, name='health_check'),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('api/auth/', include('apps.users.urls')),
+    path('api/auth/', include('apps.users.urls', namespace='auth')),
     path('api/users/', include('apps.users.urls')),
     path('api/farms/', include('apps.farms.urls')),
     path('api/diagnosis/', include('apps.diagnosis.urls')),
@@ -21,6 +21,7 @@ urlpatterns = [
     path('api/knowledge/', include('apps.knowledge.urls')),
     path('api/payments/', include('apps.payments.urls')),
     path('api/notifications/', include('apps.notifications.urls')),
+    path('api/community/', include('apps.community.urls')),
 ]
 
 if settings.DEBUG:
