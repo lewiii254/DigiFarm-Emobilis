@@ -19,9 +19,23 @@ const AddProduct = () => {
   const [preview, setPreview] = useState(null)
 
   useEffect(() => {
-    api.get('/marketplace/categories/')
-      .then(res => setCategories(res.data.results || res.data || []))
-      .catch(err => console.error('Failed to fetch categories', err))
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get('/marketplace/categories/')
+        // Handle pagination or direct list
+        const data = res.data.results ? res.data.results : res.data
+        if (Array.isArray(data)) {
+            setCategories(data)
+        } else {
+            console.error('Invalid categories format:', data)
+            setCategories([])
+        }
+      } catch (err) {
+        console.error('Failed to fetch categories', err)
+        setCategories([])
+      }
+    }
+    fetchCategories()
   }, [])
 
   const handleChange = (e) => {

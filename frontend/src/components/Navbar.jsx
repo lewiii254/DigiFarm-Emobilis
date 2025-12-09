@@ -38,6 +38,9 @@ const Navbar = () => {
             <Link to="/marketplace/cart" className="text-gray-700 hover:text-emerald-600 px-3 py-2 font-medium">
                Cart 🛒
             </Link>
+            <Link to="/agri-bot" className="px-3 py-2 bg-emerald-100 text-emerald-700 rounded-lg font-bold hover:bg-emerald-200 transition-colors flex items-center gap-2">
+               <span>🤖</span> Agri-Bot
+            </Link>
             <Link to="/community" className="nav-link px-4 py-2 rounded-lg text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors font-medium">
               Community
             </Link>

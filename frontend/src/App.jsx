@@ -19,6 +19,7 @@ import Profile from './pages/Profile'
 import Community from './pages/Community'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import Chatbot from './pages/Chatbot'
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path="/marketplace/cart" element={<Cart />} />
+              <Route path="/agri-bot" element={<Chatbot />} />
               <Route path="/marketplace/product/:id" element={<ProductDetail />} />
               <Route path="/knowledge" element={<Knowledge />} />
               <Route path="/knowledge/article/:slug" element={<ArticleDetail />} />

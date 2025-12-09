@@ -65,10 +65,18 @@ const Checkout = () => {
     if (!order) return
 
     setProcessing(true)
+    // Format phone number to 254 format if needed
+    let formattedPhone = orderData.shipping_phone
+    if (formattedPhone.startsWith('0')) {
+        formattedPhone = '254' + formattedPhone.substring(1)
+    } else if (formattedPhone.startsWith('+254')) {
+        formattedPhone = formattedPhone.substring(1) // Remove + as service handles it or expects 254
+    }
+
     try {
       await mpesaService.initiateSTKPush(
         order.id,
-        orderData.shipping_phone
+        formattedPhone
       )
       toast.success('Payment request sent! Check your phone.')
       
