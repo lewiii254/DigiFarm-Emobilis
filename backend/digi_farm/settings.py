@@ -27,6 +27,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1', '0.
 
 # Application definition
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -257,5 +258,53 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API for DigiFarm Assist - Agricultural assistance platform',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+}
+
+# JAZZMIN Settings
+JAZZMIN_SETTINGS = {
+    "site_title": "DigiFarm Admin",
+    "site_header": "DigiFarm HQ",
+    "site_brand": "DigiFarm",
+    "welcome_sign": "Welcome to DigiFarm HQ",
+    "copyright": "DigiFarm Ltd",
+    "search_model": ["users.User", "marketplace.Order"],
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Support", "url": "https://github.com/support", "new_window": True},
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "order_with_respect_to": ["users", "marketplace", "diagnosis", "farms"],
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "users.user": "fas fa-user",
+        "marketplace.Product": "fas fa-carrot",
+        "marketplace.Order": "fas fa-shopping-basket",
+        "diagnosis.Diagnosis": "fas fa-stethoscope",
+        "farms.Farm": "fas fa-tractor",
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "flatly",
+    "dark_mode_theme": "darkly",
+    "navbar": "navbar-dark",
+    "sidebar": "sidebar-dark-primary",
+    "brand_small_text": False,
+    "accent": "accent-success",
+    "navbar_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar_nav_child_indent": False,
+    "footer_fixed": False,
+    "button_classes": {
+        "primary": "btn-success",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
 }
 

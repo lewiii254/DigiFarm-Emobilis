@@ -289,7 +289,7 @@ const Knowledge = () => {
                  <iframe 
                    width="100%" 
                    height="100%" 
-                   src="https://www.youtube.com/embed/Pz5003W4CgI" 
+                   src="https://www.youtube.com/embed/nNi-mWj1rpE" 
                    title="Tomato Farming Guide" 
                    frameBorder="0" 
                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -308,7 +308,7 @@ const Knowledge = () => {
                  <iframe 
                    width="100%" 
                    height="100%" 
-                   src="https://www.youtube.com/embed/7s1xP0x55x0" 
+                   src="https://www.youtube.com/embed/RfFPo0jilro" 
                    title="Drip Irrigation Installation" 
                    frameBorder="0" 
                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -327,7 +327,7 @@ const Knowledge = () => {
                  <iframe 
                    width="100%" 
                    height="100%" 
-                   src="https://www.youtube.com/embed/SBRs4j8e7zI" 
+                   src="https://www.youtube.com/embed/k_t_rB4x-sY" 
                    title="Maize Farming Tips" 
                    frameBorder="0" 
                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
