@@ -59,6 +59,11 @@ const ProductDetail = () => {
         </div>
         <div>
           <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
+          <div className="flex items-center space-x-2 mb-4">
+             <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full uppercase font-bold tracking-wide">
+               {product.category?.name || 'Product'}
+             </span>
+          </div>
           <p className="text-3xl font-bold text-primary-600 mb-4">KES {product.price}</p>
           <p className="text-gray-600 mb-6">{product.description}</p>
           

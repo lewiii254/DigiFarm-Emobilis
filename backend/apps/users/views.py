@@ -75,3 +75,26 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
             return UserUpdateSerializer
         return UserSerializer
 
+class UserListView(generics.ListAPIView):
+    """List all users for Admin."""
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Only admins can see all users
+        if getattr(self.request.user, 'role', None) == 'admin':
+            return User.objects.all()
+        return User.objects.none()
+
+
+class UserDetailAdminView(generics.RetrieveUpdateDestroyAPIView):
+    """Retrieve, Update, Delete users for Admin."""
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        if getattr(self.request.user, 'role', None) == 'admin':
+            return User.objects.all()
+        return User.objects.none()

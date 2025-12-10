@@ -151,7 +151,7 @@ REST_FRAMEWORK = {
         'anon': '100/hour',
         'user': '1000/hour',
         'payment': '10/minute',  # Stricter for payment endpoints
-        'diagnosis': '20/hour',  # Stricter for diagnosis uploads
+        'diagnosis': '100/hour',  # Relaxed for testing
     },
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }

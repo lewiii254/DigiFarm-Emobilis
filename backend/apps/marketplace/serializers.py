@@ -87,7 +87,7 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ('id', 'customer', 'status', 'total_amount', 'shipping_address',
                   'shipping_county', 'shipping_phone', 'notes', 'items', 
                   'order_items', 'created_at', 'updated_at')
-        read_only_fields = ('id', 'customer', 'status', 'created_at', 'updated_at')
+        read_only_fields = ('id', 'customer', 'status', 'total_amount', 'created_at', 'updated_at')
     
     def create(self, validated_data):
         order_items_data = validated_data.pop('order_items')
@@ -139,6 +139,13 @@ class OrderSerializer(serializers.ModelSerializer):
             item_data['product'].save()
         
         return order
+
+
+class OrderUpdateSerializer(serializers.ModelSerializer):
+    """Serializer for updating Order status."""
+    class Meta:
+        model = Order
+        fields = ('status',)
 
 
 class RatingSerializer(serializers.ModelSerializer):

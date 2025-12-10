@@ -12,7 +12,7 @@ from .models import DiagnosisResult
 
 class DiagnosisThrottle(UserRateThrottle):
     """Custom throttle for diagnosis uploads."""
-    rate = '20/hour'
+    rate = '100/hour'
 
 
 class CropImageViewSet(viewsets.ModelViewSet):
@@ -21,7 +21,7 @@ class CropImageViewSet(viewsets.ModelViewSet):
     serializer_class = CropImageSerializer
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
-    throttle_classes = [DiagnosisThrottle]
+    # throttle_classes = [DiagnosisThrottle]
     
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -59,7 +59,7 @@ class CropImageViewSet(viewsets.ModelViewSet):
         try:
             crop_image = self.get_object()
             if crop_image.status == 'processed' and hasattr(crop_image, 'diagnosis_result'):
-                serializer = DiagnosisResultSerializer(crop_image.diagnosis_result)
+                serializer = DiagnosisDetailSerializer(crop_image)
                 return Response(serializer.data)
             elif crop_image.status == 'failed':
                 return Response(

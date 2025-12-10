@@ -9,7 +9,7 @@ import toast from 'react-hot-toast'
 
 const Checkout = () => {
   const { user } = useAuth()
-  const { cartItems, subtotal, clearCart } = useCart() // Use real cart data
+  const { cartItems, subtotal, clearCart } = useCart()
   const navigate = useNavigate()
   
   const [orderData, setOrderData] = useState({
@@ -19,6 +19,8 @@ const Checkout = () => {
   })
   const [processing, setProcessing] = useState(false)
   const [order, setOrder] = useState(null)
+  
+  const isDev = true 
 
   useEffect(() => {
     if (cartItems.length === 0 && !order) {
@@ -30,7 +32,6 @@ const Checkout = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     
-    // Check for demo items
     const hasDemoItems = cartItems.some(item => String(item.id).startsWith('demo'))
     if (hasDemoItems) {
         toast.error('Demo products cannot be purchased. Please list a new product to test checkout.')
@@ -39,7 +40,6 @@ const Checkout = () => {
 
     setProcessing(true)
 
-    // Prepare order items from cart
     const orderItemsPayload = cartItems.map(item => ({
         product_id: item.id,
         quantity: item.quantity
@@ -51,11 +51,11 @@ const Checkout = () => {
           order_items: orderItemsPayload
       })
       setOrder(response.data)
-      // Clear cart context now that order is created in backend
       clearCart() 
       toast.success('Order created! Proceed to payment')
     } catch (error) {
-      toast.error('Failed to create order: ' + (error.response?.data?.error || error.message))
+      console.error('Order creation error:', error)
+      toast.error('Failed to create order: ' + (error.response?.data?.error || JSON.stringify(error.response?.data) || error.message))
     } finally {
         setProcessing(false)
     }
@@ -65,30 +65,50 @@ const Checkout = () => {
     if (!order) return
 
     setProcessing(true)
-    // Format phone number to 254 format if needed
-    let formattedPhone = orderData.shipping_phone
-    if (formattedPhone.startsWith('0')) {
-        formattedPhone = '254' + formattedPhone.substring(1)
-    } else if (formattedPhone.startsWith('+254')) {
-        formattedPhone = formattedPhone.substring(1) // Remove + as service handles it or expects 254
-    }
+    const phoneToUse = orderData.shipping_phone
 
     try {
       await mpesaService.initiateSTKPush(
         order.id,
-        formattedPhone
+        phoneToUse
       )
       toast.success('Payment request sent! Check your phone.')
-      
-      // Poll mock
-      setTimeout(() => {
-        toast.success('Payment successful!')
-        navigate('/dashboard')
-      }, 5000) 
+      toast.loading('Waiting for M-Pesa confirmation...', { duration: 5000 })
+      setProcessing(false)
     } catch (error) {
+      console.error('Payment Error:', error)
       toast.error('Payment failed: ' + (error.response?.data?.error || error.message))
       setProcessing(false)
     }
+  }
+
+  const handleSimulatePayment = async () => {
+      if (!order) return
+      setProcessing(true)
+      try {
+          toast.loading('Simulating payment...')
+          
+          let checkoutReqId = 'ws_CO_SIMULATED_' + Date.now();
+          
+          try {
+             const res = await mpesaService.initiateSTKPush(order.id, orderData.shipping_phone);
+             if (res.checkout_request_id) {
+                 checkoutReqId = res.checkout_request_id;
+             }
+          } catch (e) {
+             console.warn('STK Init failed during simulation setup, using fake ID', e);
+          }
+
+          await mpesaService.simulateWebhook(checkoutReqId, 0, 'SIM' + Date.now());
+          toast.dismiss();
+          toast.success('Payment Simulated Successfully!');
+          navigate('/dashboard');
+          
+      } catch (error) {
+          toast.error('Simulation failed: ' + error.message)
+      } finally {
+          setProcessing(false)
+      }
   }
 
   return (
@@ -108,7 +128,6 @@ const Checkout = () => {
             {!order ? (
               <form onSubmit={handleSubmit} className="space-y-6">
                 
-                {/* Order Review */}
                 <div className="bg-gray-50 p-4 rounded-xl mb-6">
                     <h3 className="font-bold text-gray-700 mb-2">Order Review</h3>
                     <ul className="space-y-2 text-sm text-gray-600">
@@ -154,7 +173,7 @@ const Checkout = () => {
                     <input
                       type="tel"
                       className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
-                      placeholder="+2547..."
+                      placeholder="0712345678"
                       value={orderData.shipping_phone}
                       onChange={(e) => setOrderData({ ...orderData, shipping_phone: e.target.value })}
                       required
@@ -196,21 +215,34 @@ const Checkout = () => {
                   </div>
                 </div>
 
-                <button
-                  onClick={handlePayment}
-                  disabled={processing}
-                  className="w-full max-w-sm bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition-all shadow-lg hover:shadow-green-500/30 flex justify-center items-center gap-2 mx-auto"
-                >
-                  {processing ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Processing M-Pesa...
-                    </>
-                  ) : (
-                    'Pay with M-Pesa'
-                  )}
-                </button>
-                <p className="text-xs text-gray-400 mt-4">Secure payment via Daraja API</p>
+                <div className="space-y-4 max-w-sm mx-auto">
+                    <button
+                      onClick={handlePayment}
+                      disabled={processing}
+                      className="w-full bg-green-600 text-white py-4 rounded-xl font-bold hover:bg-green-700 transition-all shadow-lg hover:shadow-green-500/30 flex justify-center items-center gap-2"
+                    >
+                      {processing ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        'Pay with M-Pesa'
+                      )}
+                    </button>
+
+                    {isDev && (
+                        <button
+                          onClick={handleSimulatePayment}
+                          disabled={processing}
+                          className="w-full bg-blue-50 text-blue-600 py-3 rounded-xl font-bold hover:bg-blue-100 transition-all border border-blue-200 text-sm"
+                        >
+                           Simulate Successful Payment (Dev)
+                        </button>
+                    )}
+                </div>
+                
+                <p className="text-xs text-gray-400 mt-6">Secure payment via Daraja API</p>
               </div>
             )}
           </div>

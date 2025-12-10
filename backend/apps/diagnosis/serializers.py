@@ -34,7 +34,7 @@ class DiagnosisResultSerializer(serializers.ModelSerializer):
 class DiagnosisDetailSerializer(serializers.ModelSerializer):
     """Combined serializer for diagnosis with image and result."""
     crop_image = CropImageSerializer(read_only=True)
-    diagnosis_result = DiagnosisResultSerializer(read_only=True, source='diagnosis_result', allow_null=True)
+    diagnosis_result = DiagnosisResultSerializer(read_only=True, allow_null=True)
     
     class Meta:
         model = CropImage

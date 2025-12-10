@@ -79,6 +79,35 @@ def mock_crop_diagnosis(crop_image):
     # Mock predictions based on filename or simple heuristics
     filename = crop_image.image.name.lower()
     
+    # Heuristic: Check filename for "sick" to force a specific detailed result
+    if 'sick' in filename or 'issue' in filename or 'blight' in filename:
+        return {
+            'label': 'Early Blight (Alternaria solani)',
+            'confidence': 0.98,
+            'recommendations': {
+                'issue': 'Severe fungal infection identified as Early Blight. Characterized by concentric ring patterns on leaves and fruit rot.',
+                'severity': 'high',
+                'treatment': [
+                    'IMMEDIATE ACTION: Remove and burn all infected lower leaves to stop upward spread.',
+                    'Apply fungicide containing Chlorothalonil or Mancozeb every 7 days.',
+                    'Copper-based fungicides are effective organic alternatives.',
+                    'Improve air circulation by pruning excess foliage.',
+                    'Water only at the base of the plant to keep leaves dry.'
+                ],
+                'prevention': [
+                    'Implement 3-year crop rotation (avoid planting solanaceous crops in same spot).',
+                    'Mulch soil to prevent spores from splashing onto leaves.',
+                    'Use certified disease-free seeds.',
+                    'Drip irrigation is highly recommended.'
+                ],
+                'recommended_products': [
+                    {'name': 'Daconil Fungicide', 'category': 'fungicide'},
+                    {'name': 'Liquid Copper Fungicide', 'category': 'organic-fungicide'},
+                ],
+                'timeline': 'With immediate treatment, spread can be contained in 3-5 days. Infected leaves will not recover.'
+            }
+        }
+    
     # Mock disease/issue predictions
     mock_results = [
         {

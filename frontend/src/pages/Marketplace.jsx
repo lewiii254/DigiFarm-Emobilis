@@ -62,6 +62,9 @@ const Marketplace = () => {
 
   useEffect(() => {
     fetchProducts()
+    // Refetch every 5 seconds to catch newly added products
+    const interval = setInterval(fetchProducts, 5000)
+    return () => clearInterval(interval)
   }, [filters])
 
   const fetchProducts = async () => {
@@ -73,10 +76,19 @@ const Marketplace = () => {
       if (filters.max_price) params.append('max_price', filters.max_price)
 
       const response = await api.get(`/marketplace/products/?${params}`)
-      const data = response.data.results || response.data || []
-      setProducts(data.length ? data : demoProducts)
+      // Handle both paginated and direct list responses
+      let data = response.data
+      if (data.results) {
+        data = data.results
+      } else if (Array.isArray(data)) {
+        data = data
+      } else {
+        data = []
+      }
+      setProducts(data.length > 0 ? data : demoProducts)
     } catch (error) {
-      // Quiet fail to demo data if backend offline/empty
+      console.error('Failed to fetch products:', error)
+      // Fallback to demo data if backend offline/empty
       setProducts(demoProducts)
     } finally {
       setLoading(false)
@@ -237,7 +249,7 @@ const Marketplace = () => {
                         <div className="p-5">
                           <div className="flex justify-between items-start mb-2">
                             <p className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full uppercase tracking-wide">
-                              {product.category || 'Inputs'}
+                              {product.category?.name || product.category || 'Inputs'}
                             </p>
                             <span className="text-xs text-gray-500 flex items-center gap-1">
                               🏪 {product.vendor_name || 'Verified'}

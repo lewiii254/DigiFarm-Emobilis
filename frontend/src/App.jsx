@@ -8,9 +8,14 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Marketplace from './pages/Marketplace'
 import AddProduct from './pages/AddProduct'
+import VendorOrders from './pages/VendorOrders'
+import UserOrders from './pages/UserOrders'
 import ProductDetail from './pages/ProductDetail'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
+import CheckOut from './pages/Checkout'
+import AdminUsers from './pages/AdminUsers'
+import AdminOrders from './pages/AdminOrders'
 import { CartProvider } from './context/CartContext'
 import Diagnosis from './pages/Diagnosis'
 import Knowledge from './pages/Knowledge'
@@ -40,6 +45,16 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path="/marketplace/cart" element={<Cart />} />
+              <Route path="/marketplace/orders" element={
+                <ProtectedRoute>
+                  <VendorOrders />
+                </ProtectedRoute>
+              } />
+              <Route path="/orders" element={
+                <ProtectedRoute>
+                  <UserOrders />
+                </ProtectedRoute>
+              } />
               <Route path="/agri-bot" element={<Chatbot />} />
               <Route path="/marketplace/product/:id" element={<ProductDetail />} />
               <Route path="/knowledge" element={<Knowledge />} />
@@ -52,6 +67,16 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route path="/admin/users" element={
+                <ProtectedRoute>
+                  <AdminUsers />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/orders" element={
+                <ProtectedRoute>
+                  <AdminOrders />
+                </ProtectedRoute>
+              } />
               <Route
                 path="/diagnosis"
                 element={

@@ -7,7 +7,7 @@ from rest_framework import filters
 from .models import Product, ProductCategory, Order, Rating, Vendor, ProductImage
 from .serializers import (
     ProductSerializer, ProductCategorySerializer, OrderSerializer,
-    RatingSerializer, VendorSerializer
+    RatingSerializer, VendorSerializer, OrderUpdateSerializer
 )
 
 
@@ -44,7 +44,8 @@ class ProductViewSet(viewsets.ModelViewSet):
         
         # Get or create vendor profile
         vendor, _ = Vendor.objects.get_or_create(user=self.request.user)
-        product = serializer.save(vendor=vendor)
+        # Ensure product is active and verified by default for this release
+        product = serializer.save(vendor=vendor, is_active=True, is_verified=True)
         
         # Handle images
         images = self.request.FILES.getlist('images')
@@ -67,13 +68,25 @@ class OrderViewSet(viewsets.ModelViewSet):
     """ViewSet for Order CRUD operations."""
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action in ['update', 'partial_update']:
+            return OrderUpdateSerializer
+        return OrderSerializer
     
     def get_queryset(self):
-        # Users can only see their own orders
-        return Order.objects.filter(customer=self.request.user).prefetch_related('items__product')
+        user = self.request.user
+        if getattr(user, 'role', None) == 'admin':
+            return Order.objects.all().prefetch_related('items__product')
+        elif getattr(user, 'role', None) == 'vendor':
+            # Vendors see orders containing their products
+            return Order.objects.filter(items__product__vendor__user=user).distinct().prefetch_related('items__product')
+        
+        # Customers can only see their own orders
+        return Order.objects.filter(customer=user).prefetch_related('items__product')
     
     def perform_create(self, serializer):
-        serializer.save(customer=self.request.user)
+        serializer.save()
     
     @action(detail=True, methods=['patch'])
     def cancel(self, request, pk=None):

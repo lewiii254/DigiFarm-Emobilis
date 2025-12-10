@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import api from '../services/api'
@@ -32,6 +32,7 @@ const AddProduct = () => {
         }
       } catch (err) {
         console.error('Failed to fetch categories', err)
+        toast.error('Could not load categories. Please refresh.')
         setCategories([])
       }
     }
@@ -57,12 +58,23 @@ const AddProduct = () => {
     e.preventDefault()
     setLoading(true)
     
+    // Validation
+    if (!formData.category && categories.length > 0) {
+        // If user didn't select, and we have categories, force select first or error?
+        // Better to error or pick first if not mandatory. But it is usually mandatory.
+        if (!formData.category) {
+             toast.error('Please select a category')
+             setLoading(false)
+             return
+        }
+    }
+
     const data = new FormData()
     data.append('title', formData.title)
     data.append('description', formData.description)
     data.append('price', formData.price)
     data.append('stock', formData.stock)
-    data.append('category_id', formData.category || (categories[0]?.id))
+    data.append('category_id', formData.category) // Ensure backend expects category_id
     
     if (formData.image) {
       data.append('images', formData.image) 
@@ -76,10 +88,11 @@ const AddProduct = () => {
       })
       
       toast.success('Product listed successfully!')
+      // Force a small delay or state update if needed, but navigation should trigger re-fetch on Marketplace
       navigate('/marketplace')
     } catch (error) {
-      toast.error('Failed to list product: ' + (error.response?.data?.detail || error.message))
-      console.error(error)
+      console.error('Add Product Error:', error)
+      toast.error('Failed to list product: ' + (error.response?.data?.detail || JSON.stringify(error.response?.data) || error.message))
     } finally {
       setLoading(false)
     }
@@ -135,6 +148,7 @@ const AddProduct = () => {
                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
                  <select 
                    name="category"
+                   required
                    className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none"
                    value={formData.category}
                    onChange={handleChange}
@@ -167,6 +181,8 @@ const AddProduct = () => {
                   type="number"
                   name="price"
                   required
+                  min="0"
+                  step="0.01"
                   className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none"
                   placeholder="0.00"
                   value={formData.price}
@@ -179,6 +195,7 @@ const AddProduct = () => {
                   type="number"
                   name="stock"
                   required
+                  min="1"
                   className="w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none"
                   placeholder="100"
                   value={formData.stock}
@@ -191,9 +208,14 @@ const AddProduct = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-emerald-600 text-white py-4 rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg hover:shadow-emerald-500/30 disabled:opacity-50"
+                className="w-full bg-emerald-600 text-white py-4 rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg hover:shadow-emerald-500/30 disabled:opacity-50 flex justify-center items-center gap-2"
               >
-                {loading ? 'Listing Product...' : 'Publish Item'}
+                {loading ? (
+                    <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Listing Product...
+                    </>
+                ) : 'Publish Item'}
               </button>
             </div>
 
