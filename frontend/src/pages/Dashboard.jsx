@@ -23,7 +23,7 @@ const Dashboard = () => {
   const fetchOrders = async () => {
       try {
           const res = await api.get('/marketplace/orders/')
-          setOrders(res.data)
+          setOrders(res.data.results || res.data)
       } catch (err) {
           console.error("Failed to fetch orders", err)
       }

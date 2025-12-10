@@ -15,8 +15,9 @@ const AdminOrders = () => {
     const fetchOrders = async () => {
         try {
             const res = await api.get('/marketplace/orders/')
-            if (Array.isArray(res.data)) {
-                setOrders(res.data)
+            const data = res.data.results || res.data
+            if (Array.isArray(data)) {
+                setOrders(data)
             } else {
                 setOrders([])
             }

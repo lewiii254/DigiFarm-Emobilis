@@ -15,7 +15,8 @@ const AdminUsers = () => {
     const fetchUsers = async () => {
         try {
             const res = await api.get('/users/list/')
-            setUsers(res.data)
+            const data = res.data.results || res.data
+            setUsers(data)
             setLoading(false)
         } catch (error) {
             toast.error('Failed to load users')

@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from django.db.models import Q
 from .models import Product, ProductCategory, Order, Rating, Vendor, ProductImage
 from .serializers import (
     ProductSerializer, ProductCategorySerializer, OrderSerializer,
@@ -79,8 +80,10 @@ class OrderViewSet(viewsets.ModelViewSet):
         if getattr(user, 'role', None) == 'admin':
             return Order.objects.all().prefetch_related('items__product')
         elif getattr(user, 'role', None) == 'vendor':
-            # Vendors see orders containing their products
-            return Order.objects.filter(items__product__vendor__user=user).distinct().prefetch_related('items__product')
+            # Vendors see orders they placed (as customer) OR orders containing their products (as vendor)
+            return Order.objects.filter(
+                Q(customer=user) | Q(items__product__vendor__user=user)
+            ).distinct().prefetch_related('items__product')
         
         # Customers can only see their own orders
         return Order.objects.filter(customer=user).prefetch_related('items__product')
@@ -123,4 +126,3 @@ class VendorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Vendor.objects.filter(is_verified=True)
     serializer_class = VendorSerializer
     permission_classes = [AllowAny]
-
