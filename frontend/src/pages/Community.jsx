@@ -55,12 +55,27 @@ const Community = () => {
   }
   
   const handleLike = async (id) => {
+    if (!user) {
+        toast.error('Please login to like posts')
+        return
+    }
+
+    // Optimistic Update
+    const originalPosts = [...posts]
+    setPosts(posts.map(post => 
+        post.id === id ? { 
+            ...post, 
+            likes_count: post.is_liked ? post.likes_count - 1 : post.likes_count + 1, 
+            is_liked: !post.is_liked 
+        } : post
+    ))
+
     try {
-        const response = await api.post(`/community/posts/${id}/like/`)
-        setPosts(posts.map(post => 
-            post.id === id ? { ...post, likes_count: response.data.likes_count, is_liked: response.data.status === 'liked' } : post
-        ))
+        await api.post(`/community/posts/${id}/like/`)
+        // No need to update state if successful as we already did
     } catch (error) {
+        // Revert on failure
+        setPosts(originalPosts)
         toast.error('Could not like post')
     }
   }

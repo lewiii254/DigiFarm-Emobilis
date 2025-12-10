@@ -25,6 +25,7 @@ import Community from './pages/Community'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import Chatbot from './pages/Chatbot'
+import ChatWidget from './components/ChatWidget'
 
 function App() {
   return (
@@ -104,6 +105,7 @@ function App() {
               <Route path="/community" element={<Community />} />
             </Routes>
           </main>
+          <ChatWidget />
           <Footer />
           <Toaster position="top-right" />
         </div>

@@ -79,7 +79,7 @@ const Home = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.8 }}
-              className="relative hidden lg:block"
+              className="relative mt-12 lg:mt-0"
             >
               <div className="relative z-10 transform hover:scale-[1.02] transition-transform duration-500">
                 <div className="absolute -top-10 -right-10 w-24 h-24 bg-yellow-400/20 rounded-full blur-xl animate-pulse" />
